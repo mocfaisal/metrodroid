@@ -1,0 +1,33 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+      with:
+        submodules: 'true'
+    - name: set up JDK
+      uses: actions/setup-java@v3.13.0
+      with:
+        java-version: '15'
+        distribution: 'zulu'
+        cache: gradle
+    - name: Setup Kotlin
+      uses: fwilhe2/setup-kotlin@0.9.0
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2.9.0
+    - name: Build with Gradle
+      run: ./gradlew build
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.3
