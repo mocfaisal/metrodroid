@@ -1,5 +1,8 @@
 import au.id.micolous.metrodroid.LocalizeGenerator
 
+def gitCount = "git -C ${projectDir} rev-list --count HEAD".execute().text.trim()
+def gitDesc = "git -C ${projectDir} describe --always --tags --dirty".execute().text.trim()
+
 allprojects {
     repositories {
         google()
@@ -596,8 +599,8 @@ android {
         minSdkVersion android_min_version
         targetSdkVersion android_sdk_version
         testApplicationId "au.id.micolous.farebot.test"
-        versionCode "git -C ${projectDir} rev-list --count HEAD".execute().text.trim().toInteger()
-        versionName "git -C ${projectDir} describe --always --tags --dirty".execute().text.trim().replaceAll("^v", "")
+        versionCode = gitCount ? gitCount.toInteger() : 1
+        versionName = gitDesc ? gitDesc.replaceAll("^v", "") : "0.0.1"
         resConfigs androidLanguageList
 
         buildConfigField "String[]", "AVAILABLE_TRANSLATIONS", "new String[]{\"" + androidLanguageList.join("\", \"") + "\"}"
